@@ -14,6 +14,7 @@ class CT_P(BaseOxmlElement):
     """
     pPr = ZeroOrOne('w:pPr')
     r = ZeroOrMore('w:r')
+    hypr = ZeroOrMore('w:hyperlink')
 
     def _insert_pPr(self, pPr):
         self.insert(0, pPr)
@@ -26,6 +27,7 @@ class CT_P(BaseOxmlElement):
         new_p = OxmlElement('w:p')
         self.addprevious(new_p)
         return new_p
+
 
     @property
     def alignment(self):

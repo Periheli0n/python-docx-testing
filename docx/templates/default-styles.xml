@@ -155,6 +155,7 @@
     <w:lsdException w:name="Book Title" w:semiHidden="0" w:uiPriority="33" w:unhideWhenUsed="0" w:qFormat="1"/>
     <w:lsdException w:name="Bibliography" w:uiPriority="37"/>
     <w:lsdException w:name="TOC Heading" w:uiPriority="39" w:qFormat="1"/>
+    <w:lsdException w:name="Hyperlink" w:semiHidden="1" w:unhideWhenUsed="1"/>
   </w:latentStyles>
   <w:style w:type="paragraph" w:default="1" w:styleId="Normal">
     <w:name w:val="Normal"/>
@@ -166,6 +167,17 @@
     <w:semiHidden/>
     <w:unhideWhenUsed/>
   </w:style>
+  <w:style w:type="character" w:default="1" w:styleId="Hyperlink">
+		<w:name w:val="Hyperlink"/>
+		<w:basedOn w:val="DefaultParagraphFont"/>
+		<w:uiPriority w:val="99"/>
+		<w:unhideWhenUsed/>
+		<w:rPr>
+			<w:color w:val="000000"
+			         w:themeColor="hyperlink"/>
+			<w:u w:val="single"/>
+		</w:rPr>
+	</w:style>
   <w:style w:type="table" w:default="1" w:styleId="TableNormal">
     <w:name w:val="Normal Table"/>
     <w:uiPriority w:val="99"/>

@@ -28,6 +28,7 @@ class BabelFish(object):
         ('Heading 7', 'heading 7'),
         ('Heading 8', 'heading 8'),
         ('Heading 9', 'heading 9'),
+        ('Hyperlink', 'hyperlink'),
     )
 
     internal_style_names = dict(style_aliases)

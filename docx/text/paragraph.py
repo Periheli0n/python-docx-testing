@@ -12,6 +12,8 @@ from ..enum.style import WD_STYLE_TYPE
 from .parfmt import ParagraphFormat
 from .run import Run
 from ..shared import Parented
+from .hyperlink import Hyperlink
+from docx.opc.constants import RELATIONSHIP_TYPE
 
 
 class Paragraph(Parented):
@@ -38,6 +40,17 @@ class Paragraph(Parented):
         if style:
             run.style = style
         return run
+
+    def add_hyperlink(self, url, text):
+        rId = self.part.relate_to(url, RELATIONSHIP_TYPE.HYPERLINK, is_external=True)
+
+        hypr_elm = self._p.add_hypr()
+        hypr_obj = Hyperlink(hypr_elm, rId, self)
+        hypr_obj.add_text(text)
+
+        return hypr_obj
+
+    
 
     @property
     def alignment(self):

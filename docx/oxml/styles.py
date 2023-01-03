@@ -28,6 +28,7 @@ def styleId_from_name(name):
         'heading 7': 'Heading7',
         'heading 8': 'Heading8',
         'heading 9': 'Heading9',
+        'hyperlink': 'Hyperlink',
     }.get(name, name.replace(' ', ''))
 
 
