@@ -9,6 +9,7 @@ from docx.enum.section import WD_SECTION
 from docx.enum.text import WD_BREAK
 from docx.section import Section, Sections
 from docx.shared import ElementProxy, Emu
+from random import randrange as rr
 
 
 class Document(ElementProxy):
@@ -24,6 +25,9 @@ class Document(ElementProxy):
         super(Document, self).__init__(element)
         self._part = part
         self.__body = None
+        print("Init Document")
+        #self._toc_headings= None
+        print("toc_headings should have been created")
 
     def add_heading(self, text="", level=1):
         """Return a heading paragraph newly added to the end of the document.
@@ -36,7 +40,25 @@ class Document(ElementProxy):
         if not 0 <= level <= 9:
             raise ValueError("level must be in range 0-9, got %d" % level)
         style = "Title" if level == 0 else "Heading %d" % level
-        return self.add_paragraph(text, style)
+        heading= self.add_paragraph(text, style)
+
+        if 0 < level < 3: #Add <w:bookmarkStart> and <w:bookmarkEnd> elements to the heading for use with TOC
+            bm_headings=['Heading 1', 'Heading 2']
+            print(heading.style.name)
+            bm_name= Document._create_bookmark_name(level)
+            #self.toc_headings.append(bm_name)
+            #id = self.toc_headings.index(bm_name)
+            id=-1
+            for para in self.paragraphs:
+                if para.style.name in bm_headings:
+                    id+=1 
+
+            heading.create_bookmark(id, bm_name)
+
+        return heading
+
+
+
 
     def add_page_break(self):
         """Return newly |Paragraph| object containing only a page break."""
@@ -93,6 +115,18 @@ class Document(ElementProxy):
         table.style = style
         return table
 
+    def init_toc(self):
+        return self._body.add_sdt()
+
+    @classmethod
+    def _create_bookmark_name(cls, heading_type):
+        if ( heading_type == 1):
+            return f"_Toc{rr(100000000,149999999)}"
+        elif (heading_type == 2):
+            return f"_Toc{rr(150000000,199999999)}"
+        else:
+                raise ValueError("Bookmark headings are only supported for heading levels 1 and 3, got %d" % level)
+    
     @property
     def core_properties(self):
         """
@@ -184,6 +218,19 @@ class Document(ElementProxy):
         if self.__body is None:
             self.__body = _Body(self._element.body, self)
         return self.__body
+
+    @property
+    def toc_headings(self):
+        #if self._toc_headings is None:
+        #    self._toc_headings = []
+        return self.toc_headings
+    
+    @toc_headings.setter
+    def toc_headings(self,bookmark_name):
+        if self.toc_headings is None:
+           self.toc_headings = []
+        self.toc_headings.append(bookmark_name)
+
 
 
 class _Body(BlockItemContainer):

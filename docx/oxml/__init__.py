@@ -249,3 +249,6 @@ register_element_cls('w:t',  CT_Text)
 
 from .text.hyperlink import CT_Hyper
 register_element_cls('w:hyperlink', CT_Hyper)
+
+from .toc import CT_SDT
+register_element_cls('w:sdt',CT_SDT)

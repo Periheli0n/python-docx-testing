@@ -11,20 +11,20 @@ from ..enum.text import WD_BREAK
 from .font import Font
 from ..shape import InlineShape
 from ..shared import Parented
+from ..oxml.text.hyperlink import CT_Hyper
 from .run import _Text
 
 class Hyperlink(Parented):
     """
     Proxy object wrapping ``<w:hyperlink>`` element. Hyperlink has a required property of a Relationship ID corresponding to a document rels proprty with the URL. Text attributes are determined by an internal Run nested inside the hyperlink.
     """
-    def __init__(self, hyp, rId, parent):
+    def __init__(self, hyper, rId, parent):
         super(Hyperlink, self).__init__(parent)
-        self._hyper = self._element = self.element = hyp
-        #self.element._insert_r(self.element.add_r())
-        setattr(self.element,'r:rId', rId)
-        self.rId = rId
-        self._hyper.add_r()
-        self.style = "Hyperlink"
+        #self._hyper = self._element = self.element = CT_Hyper.new_hyperlink(text,rId)
+        self._hyper = self._element = self.element = hyper
+        self.element.add_r()
+        
+
 
 
     def add_text(self, text):

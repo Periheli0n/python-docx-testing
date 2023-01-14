@@ -125,6 +125,16 @@ class DocumentPart(BaseStoryPart):
         of this document.
         """
         return self._styles_part.styles
+    
+    @property
+    def _toc_headings(self):
+        return None
+
+    @_toc_headings.setter
+    def _toc_headings(self,bookmark):
+        if self._toc_headings is None:
+            self._toc_headings=[]
+        self.toc_headings.append(bookmark)
 
     @property
     def _settings_part(self):

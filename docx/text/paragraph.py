@@ -13,6 +13,9 @@ from .parfmt import ParagraphFormat
 from .run import Run
 from ..shared import Parented
 from .hyperlink import Hyperlink
+from ..oxml.text.hyperlink import CT_Hyper
+from ..oxml import OxmlElement
+from ..oxml.ns import qn
 from docx.opc.constants import RELATIONSHIP_TYPE
 
 
@@ -23,6 +26,8 @@ class Paragraph(Parented):
     def __init__(self, p, parent):
         super(Paragraph, self).__init__(parent)
         self._p = self._element = p
+        self._bookmark = ""
+
 
     def add_run(self, text=None, style=None):
         """
@@ -41,16 +46,41 @@ class Paragraph(Parented):
             run.style = style
         return run
 
+    '''
     def add_hyperlink(self, url, text):
         rId = self.part.relate_to(url, RELATIONSHIP_TYPE.HYPERLINK, is_external=True)
 
-        hypr_elm = self._p.add_hypr()
+        #hypr_elm = self._p.add_hypr({'rId': rId})
+        hypr_elm= self._p.add_hypr(attrs=[('rId',rId)])
         hypr_obj = Hyperlink(hypr_elm, rId, self)
         hypr_obj.add_text(text)
 
         return hypr_obj
+    '''
+    def add_hyperlink(self, text, url):
+        rId = self.part.relate_to(url, RELATIONSHIP_TYPE.HYPERLINK, is_external=True)
+        hyp = CT_Hyper.new_hyperlink(text,rId)
+        self._p.append(hyp)
+        return hyp
 
-    
+    def add_hyperlink2(self,text,url):
+        rId = self.part.relate_to(url, RELATIONSHIP_TYPE.HYPERLINK, is_external=True)
+        hyp = self._p.add_hypr()
+        hyp.set_hyperlink(text,rId)
+        return hyp
+
+    def create_bookmark(self, id, name):
+        if not (self.style.name == 'Heading 1' or self.style.name == 'Heading 2'):
+            raise ValueError(f"Bookmarked headers can only be created for paragraphs of style 'Heading 1' or 'Heading 2'. Paragraph style: '{self.style.name}'")
+        
+        start= OxmlElement('w:bookmarkStart')
+        start.set(qn('w:id'),str(id))
+        start.set(qn('w:name'),name)
+        end= OxmlElement('w:bookmarkEnd')
+        end.set(qn('w:id'),str(id))
+        self._p.insert(1, start)
+        self._p.append(end)
+        self.bookmark= name
 
     @property
     def alignment(self):
@@ -156,3 +186,14 @@ class Paragraph(Parented):
         """
         p = self._p.add_p_before()
         return Paragraph(p, self._parent)
+
+    @property 
+    def bookmark(self):
+        """
+        String used by Table of Contents (Heading 1 & Heading 2 specifically) to reference these headers.
+        """
+        return self._bookmark
+
+    @bookmark.setter
+    def bookmark(self,bookmark):
+        self._bookmark = bookmark

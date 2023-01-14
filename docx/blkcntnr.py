@@ -50,6 +50,11 @@ class BlockItemContainer(Parented):
         self._element._insert_tbl(tbl)
         return Table(tbl, self)
 
+    def add_sdt(self):
+        sdt= self._add_sdt()
+        sdt.init_toc()
+        return sdt
+
     @property
     def paragraphs(self):
         """
@@ -73,3 +78,6 @@ class BlockItemContainer(Parented):
         container.
         """
         return Paragraph(self._element.add_p(), self)
+
+    def _add_sdt(self):
+        return self._element.add_sdt()
